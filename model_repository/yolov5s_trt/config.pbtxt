@@ -13,7 +13,7 @@ output [
     {
         name: "output"
         data_type: TYPE_FP32
-        dims: [1, 15120, 85]
+        dims: [15120, 85]
         label_filename: "coco.txt"
     }
 ]
