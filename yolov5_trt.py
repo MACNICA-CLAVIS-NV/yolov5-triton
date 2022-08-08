@@ -13,7 +13,7 @@ basicConfig(level=DEBUG)
 # basicConfig(level=ERROR)
 logger = getLogger(__name__)
 
-DEFAULT_ENGINE_FILE = 'yolov5s.trt'
+DEFAULT_ENGINE_FILE = 'model.plan'
 DEFAULT_IMAGE_URL = 'https://ultralytics.com/images/zidane.jpg'
 TRT_LOGGER = trt.Logger()
 
