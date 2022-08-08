@@ -1,9 +1,9 @@
-name: "yolov5s_onnx"
-platform: "onnxruntime_onnx"
+name: "yolov5s_trt"
+platform: "tensorrt_plan"
 max_batch_size: 1
 input [
     {
-        name: "onnx::Cast_0"
+        name: "input"
         data_type: TYPE_FP32
         format: FORMAT_NCHW
         dims: [3, 384, 640]
@@ -11,7 +11,7 @@ input [
 ]
 output [
     {
-        name: "444"
+        name: "output"
         data_type: TYPE_FP32
         dims: [1, 15120, 85]
         label_filename: "coco.txt"
