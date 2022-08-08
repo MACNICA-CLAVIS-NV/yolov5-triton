@@ -3,6 +3,7 @@ __pycache__
 *.pt
 *.onnx
 *.trt
+*.plan
 zidane.jpg
 profile.json
 model_repository/tinyyolov2_onnx
