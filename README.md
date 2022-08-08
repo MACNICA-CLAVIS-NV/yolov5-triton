@@ -37,7 +37,6 @@ exit
 /usr/src/tensorrt/bin/trtexec \
 	--onnx=yolov5s.onnx \
 	--saveEngine=model.plan \
-	--maxBatch=8 \
 	--workspace=4096 \
 	--exportProfile=profile.json
 ```
