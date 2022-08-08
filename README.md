@@ -36,9 +36,16 @@ exit
 ```bash
 /usr/src/tensorrt/bin/trtexec \
 	--onnx=yolov5s.onnx \
-	--saveEngine=yolov5s.trt \
-	--workspace=2048 \
+	--saveEngine=model.plan \
+	--maxBatch=8 \
+	--workspace=4096 \
 	--exportProfile=profile.json
+```
+
+## Copy TensorRT engine to model repository
+
+```bash
+cp model.plan ./model_repository/yolov5s_trt/1/
 ```
 
 ## Set up Python environment
