@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 import sys
+from tabnanny import verbose
 import torch
 
 def main():
@@ -41,6 +42,8 @@ def main():
     model = model.to('cpu')
     torch.onnx.export(
         model, torch.zeros(1, 3, 384, 640), onnx_file, 
+        verbose=True, input_names=["input"], output_names=["output"],
+        # dynamic_axes={"input": {0: "batch_size"}, "output": {0: "batch_size"}},
         export_params=True, opset_version=11)
 
 if __name__ == '__main__':

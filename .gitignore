@@ -5,3 +5,5 @@ __pycache__
 *.trt
 zidane.jpg
 profile.json
+model_repository/tinyyolov2_onnx
+model_repository/tinyyolov2_trt
