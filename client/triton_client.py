@@ -134,8 +134,8 @@ class TritonClient():
 
     def parse_model(self, model_name: str, model_version=''):
         
-        if not self.client.is_model_ready(model_name):
-            raise TritonClientError('model loading failure')
+        # if not self.client.is_model_ready(model_name):
+        #     raise TritonClientError('model loading failure')
 
         try:
             model_metadata = self.client.get_model_metadata(

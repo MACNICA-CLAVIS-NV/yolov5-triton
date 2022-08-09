@@ -6,5 +6,5 @@ __pycache__
 *.plan
 zidane.jpg
 profile.json
-model_repository/tinyyolov2_onnx
-model_repository/tinyyolov2_trt
+server/model_repository/tinyyolov2_onnx
+server/model_repository/tinyyolov2_trt

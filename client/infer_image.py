@@ -28,7 +28,7 @@ import argparse
 import triton_client
 
 SERVER_URL_DEFAULT: str = 'localhost:8000'
-MODEL_NAME: str = 'yolov5_trt'
+MODEL_NAME: str = 'yolov5s_trt'
 
 
 def main():
@@ -45,7 +45,7 @@ def main():
     # Create Triton client
     client = triton_client.TritonClient(url=args.url)
 
-    # Load model
+    # parse model
     try:
         client.parse_model(model_name=MODEL_NAME)
     except triton_client.TritonClientError as e:
