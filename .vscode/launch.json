@@ -13,6 +13,7 @@
                 "--url=localhost:8000",
                 "zidane.jpg"
             ],
+            "cwd": "${workspaceFolder}/client",
             "console": "integratedTerminal",
             "justMyCode": false
         }

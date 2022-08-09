@@ -25,7 +25,10 @@
 
 import sys
 import argparse
+from PIL import Image
 import triton_client
+import preprocess
+from yolov5_utils import *
 
 SERVER_URL_DEFAULT: str = 'localhost:8000'
 MODEL_NAME: str = 'yolov5s_trt'
@@ -42,6 +45,10 @@ def main():
         help='Triton Inference Server URL (Default: {})'.format(SERVER_URL_DEFAULT))
     args = parser.parse_args()
 
+    # Open and resize the input image
+    pil_image: Image.Image = Image.open(args.image[0])
+    input_batch: np.ndarray = preprocess_pil_images([pil_image])
+
     # Create Triton client
     client = triton_client.TritonClient(url=args.url)
 
@@ -53,6 +60,17 @@ def main():
         sys.exit(-1)
 
     print('Model {} parsed successfully'.format(MODEL_NAME))
+
+    client.infer(input_batch)
+
+    outputs = client.get_results()
+    print(outputs)
+
+    results:List[np.ndarray] = postprocess(
+        outputs[0], (pil_image.height, pil_image.width))
+    print(results)
+
+
 
 if __name__ == '__main__':
     main()

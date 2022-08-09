@@ -172,8 +172,8 @@ class TritonClient():
         print('dtype         : {}'.format(self.dtype))
 
     def infer(self, image, class_count=0):
-        if self.max_batch_size > 0:
-            image = image[np.newaxis, :]
+        # if self.max_batch_size > 0:
+        #     image = image[np.newaxis, :]
 
         inputs = [httpclient.InferInput(self.input_name, image.shape, self.dtype)]
         inputs[0].set_data_from_numpy(image)
