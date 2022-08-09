@@ -25,13 +25,13 @@
 
 import sys
 import argparse
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 import triton_client
-import preprocess
 from yolov5_utils import *
 
 SERVER_URL_DEFAULT: str = 'localhost:8000'
 MODEL_NAME: str = 'yolov5s_trt'
+LABEL_FILE: str = 'coco.txt'
 
 
 def main():
@@ -44,6 +44,9 @@ def main():
         type=str, default=SERVER_URL_DEFAULT, metavar='SERVER_URL',
         help='Triton Inference Server URL (Default: {})'.format(SERVER_URL_DEFAULT))
     args = parser.parse_args()
+
+    # Load label categories
+    labels = [line.rstrip('\n') for line in open(LABEL_FILE)]
 
     # Open and resize the input image
     pil_image: Image.Image = Image.open(args.image[0])
@@ -64,12 +67,29 @@ def main():
     client.infer(input_batch)
 
     outputs = client.get_results()
-    print(outputs)
+    # print(outputs)
 
     results:List[np.ndarray] = postprocess(
-        outputs[0], (pil_image.height, pil_image.width))
-    print(results)
+        outputs, (pil_image.height, pil_image.width))
+    # print(results[0])
 
+    draw = ImageDraw.Draw(pil_image)
+    fnt = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 32)
+
+    for bb in results[0]:
+        # print(bb)
+        x0 = bb[0]
+        y0 = bb[1]
+        x1 = bb[2]
+        y1 = bb[3]
+        score = bb[4]
+        category = int(bb[5])
+        label = labels[category]
+        print('{}\t{}\t{}\t{}\t{}\t{}'.format(x0, y0, x1, y1, score, label))
+        xy = (x0, y0, x1, y1)
+        draw.rectangle(xy, outline=(0, 255, 0), width=5)
+        draw.text((x0, y0 - 32), label, font=fnt, fill=(0, 255, 0, 128))
+        pil_image.save('result.png')
 
 
 if __name__ == '__main__':
