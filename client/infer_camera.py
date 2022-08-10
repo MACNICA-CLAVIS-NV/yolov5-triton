@@ -29,40 +29,21 @@ import numpy as np
 import argparse
 import wget
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
 import triton_client
-import preprocess
+from yolov5_utils import *
+from typing import Tuple, Optional, List, cast
 import interval_counter
-from data_processing import PostprocessYOLO
 
 
-WINDOW_TITLE = 'Triton Tiny YOLO v2 Demo'
-# MODEL_NAME = 'tinyyolov2_onnx'
-MODEL_NAME = 'tinyyolov2_trt'
+WINDOW_TITLE = 'YOLO v5 Demo'
+MODEL_NAME = 'yolov5s_trt'
 INFO_COLOR = (133, 15, 127)
 BBOX_COLOR = (63, 255, 255)
 CAMERA_ID_DEFAULT = 0
 CAPTURE_WIDTH_DEFAULT = 640
 CAPTURE_HEIGHT_DEFAULT = 480
 SERVER_URL_DEFAULT = 'localhost:8000'
-LABEL_URL = 'https://raw.githubusercontent.com/pjreddie/darknet/master/data/voc.names'
-LABEL_FILE = os.path.basename(LABEL_URL)
-
-
-def download_file(url, path):
-    file = os.path.join(path, os.path.basename(url))
-    if not os.path.exists(file):
-        wget.download(url, out=file)
-    else:
-        print('{} already exists'.format(file))
-    return file
-
-
-def download_label(path):
-    if not os.path.exists(path):
-        os.makedirs(path)
-    print('Downloading the label file from {}'.format(LABEL_URL))
-    download_file(LABEL_URL, path)
+LABEL_FILE = 'coco.txt'
 
 
 def draw_info(frame, interval):
@@ -83,17 +64,23 @@ def draw_info(frame, interval):
         )
 
 
-def draw_bboxes(image, bboxes, confidences, categories, all_categories):
-    for box, score, category in zip(bboxes, confidences, categories):
-        x_coord, y_coord, width, height = box
-        img_height, img_width, _ = image.shape
-        left = max(0, np.floor(x_coord + 0.5).astype(int))
-        top = max(0, np.floor(y_coord + 0.5).astype(int))
-        right = min(img_width, np.floor(x_coord + width + 0.5).astype(int))
-        bottom = min(img_height, np.floor(y_coord + height + 0.5).astype(int))
+def draw_bboxes(image, results: List[np.ndarray], labels: List[str], batch_num: int = 0):
+    img_height, img_width, _ = image.shape
+    for bb in results[batch_num]:
+        x0 = bb[0]
+        y0 = bb[1]
+        x1 = bb[2]
+        y1 = bb[3]
+        score = bb[4]
+        category = int(bb[5])
+        label = labels[category]
+        left = max(0, np.floor(x0 + 0.5).astype(int))
+        top = max(0, np.floor(y0 + 0.5).astype(int))
+        right = min(img_width, np.floor(x1 + 0.5).astype(int))
+        bottom = min(img_height, np.floor(y1 + 0.5).astype(int))
         cv2.rectangle(image,
             (left, top), (right, bottom), BBOX_COLOR, 3)
-        info = '{0} {1:.2f}'.format(all_categories[category], score)
+        info = '{0} {1:.2f}'.format(label, score)
         cv2.putText(image, info, (left, top - 8),
                 cv2.FONT_HERSHEY_SIMPLEX, 1, BBOX_COLOR, 1, cv2.LINE_AA)
         print(info)
@@ -101,7 +88,7 @@ def draw_bboxes(image, bboxes, confidences, categories, all_categories):
 
 def main():
     # Parse the command line parameters
-    parser = argparse.ArgumentParser(description='Triton Tiny YOLO v2 Demo')
+    parser = argparse.ArgumentParser(description='Triton YOLO v5 Demo')
     parser.add_argument('--camera',
         type=int, default=CAMERA_ID_DEFAULT, metavar='CAMERA_ID',
         help='Camera ID (Default: {})'.format(CAMERA_ID_DEFAULT))
@@ -120,37 +107,17 @@ def main():
     # Create Triton client
     client = triton_client.TritonClient(url=args.url)
 
-    # Download label file
-    label_path = os.getcwd()
-    label_file = os.path.join(label_path, LABEL_FILE)
-    download_label(label_path)
-
     # Load label categories
-    categories = [line.rstrip('\n') for line in open(label_file)]
+    labels: List[str] = [line.rstrip('\n') for line in open(LABEL_FILE)]
 
-    # Load model
+    # Parse model
     try:
-        client.load_model(model_name=MODEL_NAME)
+        client.parse_model(model_name=MODEL_NAME)
     except triton_client.TritonClientError as e:
         print(e)
         sys.exit(-1)
 
-    print('Model {} loaded successfully'.format(MODEL_NAME))
-
-    postprocessor_args = {
-        # YOLO masks (Tiny YOLO v2 has only single scale.)
-        "yolo_masks": [(0, 1, 2, 3, 4)],
-        # YOLO anchors
-        "yolo_anchors": [(1.08, 1.19), (3.42, 4.41), (6.63, 11.38), (9.42, 5.11), (16.62, 10.52)],
-        # Threshold of object confidence score (between 0 and 1)
-        "obj_threshold": 0.5,
-        # Threshold of NMS algorithm (between 0 and 1)
-        "nms_threshold": 0.3,
-        # Input image resolution
-        "yolo_input_resolution": (416, 416),
-        # Number of object classes
-        "num_categories": 20}
-    postprocessor = PostprocessYOLO(**postprocessor_args)
+    print('Model {} parsed successfully'.format(MODEL_NAME))
 
     # Initialize camera device
     cam_id = args.camera
@@ -172,25 +139,22 @@ def main():
         ret, frame = cap.read()
 
         # Preprocess frame n for model spec
-        target_image = preprocess.preprocess(
-            frame, client.format, client.dtype,
-            client.c, client.h, client.w
-        )
+        target_image: np.ndarray = preprocess_pil_images([frame])
 
         # Get inference results for frame n-1
-        results = client.get_results()
+        outputs = client.get_results()
 
         # Get interval value
         interval = fps_counter.measure()
 
-        if results is not None:
-            results = results[np.newaxis]
+        if outputs is not None:
             height, width, _ = frame.shape
-            boxes, classes, scores = postprocessor.process(
-                results, (width, height)
-            )
-            if boxes is not None:
-                draw_bboxes(frame, boxes, scores, classes, categories)
+
+            results:List[np.ndarray] = postprocess(
+                outputs, (height, width))
+
+            if len(results) > 0:
+                draw_bboxes(frame, results, labels)
 
         draw_info(frame, interval)
 

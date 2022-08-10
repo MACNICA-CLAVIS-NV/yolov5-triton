@@ -16,6 +16,21 @@
             "cwd": "${workspaceFolder}/client",
             "console": "integratedTerminal",
             "justMyCode": false
+        },
+        {
+            "name": "YOLO v5 Detection from Camera Input",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/client/infer_camera.py",
+            "args": [
+                "--camera=1",
+                "--width=640",
+                "--height=480",
+                "--url=192.168.11.52:8000"
+            ],
+            "cwd": "${workspaceFolder}/client",
+            "console": "integratedTerminal",
+            "justMyCode": false
         }
     ]
 }
