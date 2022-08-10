@@ -187,6 +187,8 @@ def postprocess(raw_pred: np.ndarray, img_shape: Tuple[int, int],
     for bi, pred in enumerate(batech_pred):
         pred_tab: np.ndarray = _narrow_down_candidates(pred, conf_thresh)
         pred_tab = _non_max_suppression(pred_tab, iou_thresh)
+        if len(pred_tab) <= 0:
+            continue
         pred_tab = _scale_coords(img_shape, pred_tab)
         detections.append(pred_tab)
     return detections
