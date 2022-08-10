@@ -1,88 +1,69 @@
 # yolov5-triton
 YOLO v5 Object Detection on Triton Inference Server
 
-## Obtain YOLO v5 ONNX model
+## Installation (Server)
+
+1. Clone this repository
+
+	```bash
+	git clone https://github.com/MACNICA-CLAVIS-NV/yolov5-triton
+	```
+
+	```bash
+	cd yolov5-triton/server
+	```
+	
+1. Launch PyTorch container
+
+	```bash
+	./torch_it.sh
+	```
+
+1. Obtain YOLO v5 ONNX model
+
+	```bash
+	pip3 install \
+		pandas \
+		PyYAML \
+		tqdm \
+		matplotlib \
+		seaborn
+	```
+
+	```bash
+	python3 torch2onnx.py yolov5s
+	```
+
+1. Covert ONNX model to TensorRT engine
+
+	```bash
+	/usr/src/tensorrt/bin/trtexec \
+		--onnx=yolov5s.onnx \
+		--saveEngine=model.plan \
+		--workspace=4096 \
+		--exportProfile=profile.json
+	```
+
+1. Copy TensorRT engine to model repository
+
+	```bash
+	cp model.plan ./model_repository/yolov5s_trt/1/
+	```
+
+1. Exit from PyTorch container
+
+	```bash
+	exit
+	```
+
+1. Build a docker image for Triton Inference Server
+
+	```bash
+	./triton_build.sh
+	```
+
+## Run Triton Inference Server
 
 ```bash
-sudo docker run \
-	-it \
-	--rm \
-	--runtime nvidia \
-	--network host \
-	-v $PWD:/work \
-	-w /work \
-	nvcr.io/nvidia/l4t-pytorch:r34.1.1-pth1.12-py3
-```
-
-```bash
-pip3 install \
-	pandas \
-	PyYAML \
-	tqdm \
-	matplotlib \
-	seaborn
-```
-
-```bash
-python3 torch2onnx.py yolov5s
-```
-
-```bash
-exit
-```
-
-## Covert ONNX model to TensorRT engine
-
-```bash
-/usr/src/tensorrt/bin/trtexec \
-	--onnx=yolov5s.onnx \
-	--saveEngine=model.plan \
-	--workspace=4096 \
-	--exportProfile=profile.json
-```
-
-## Copy TensorRT engine to model repository
-
-```bash
-cp model.plan ./model_repository/yolov5s_trt/1/
-```
-
-## Set up Python environment
-
-```bash
-sudo apt update
-```
-
-```bash
-sudo apt install python3-venv
-```
-
-```bash
-python3 -m venv --system-site-packages .venv
-```
-
-```bash
-source .venv/bin/activate
-```
-
-```bash
-python -m pip install -U pip
-```
-
-```bash
-python -m pip install numpy
-```
-
-```bash
-export PATH=$PATH:/usr/local/cuda/bin
-```
-
-```bash
-python -m pip install 'pycuda<2021.1'
-```
-
-## Test
-
-```bash
-python yolov5_trt.py
+./triton_start.sh
 ```
