@@ -4,7 +4,7 @@ __pycache__
 *.onnx
 *.trt
 *.plan
-zidane.jpg
+*.jpg
 profile.json
 server/model_repository/tinyyolov2_onnx
 server/model_repository/tinyyolov2_trt

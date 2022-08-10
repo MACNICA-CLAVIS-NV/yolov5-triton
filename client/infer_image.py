@@ -24,10 +24,12 @@
 
 
 import sys
+import os
 import argparse
 from PIL import Image, ImageDraw, ImageFont
 import triton_client
 from yolov5_utils import *
+from typing import Tuple, Optional, List, cast
 
 SERVER_URL_DEFAULT: str = 'localhost:8000'
 MODEL_NAME: str = 'yolov5s_trt'
@@ -47,6 +49,8 @@ def main():
 
     # Load label categories
     labels = [line.rstrip('\n') for line in open(LABEL_FILE)]
+
+    image_base_name: Tuple[str, str] = os.path.splitext(os.path.basename(args.image[0]))
 
     # Open and resize the input image
     pil_image: Image.Image = Image.open(args.image[0])
@@ -74,7 +78,7 @@ def main():
     # print(results[0])
 
     draw = ImageDraw.Draw(pil_image)
-    fnt = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 32)
+    fnt = ImageFont.truetype("arial.ttf", 32)
 
     for bb in results[0]:
         # print(bb)
@@ -89,7 +93,7 @@ def main():
         xy = (x0, y0, x1, y1)
         draw.rectangle(xy, outline=(0, 255, 0), width=5)
         draw.text((x0, y0 - 32), label, font=fnt, fill=(0, 255, 0, 128))
-        pil_image.save('result.png')
+        pil_image.save('{}{}{}'.format(image_base_name[0], '_infer', image_base_name[1]))
 
 
 if __name__ == '__main__':

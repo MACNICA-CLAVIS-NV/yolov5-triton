@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/client/infer_image.py",
             "args": [
-                "--url=localhost:8000",
+                "--url=192.168.11.52:8000",
                 "zidane.jpg"
             ],
             "cwd": "${workspaceFolder}/client",
