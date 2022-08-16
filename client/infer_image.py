@@ -31,9 +31,15 @@ import triton_client
 from yolov5_utils import *
 from typing import Tuple, Optional, List, cast
 
+
 SERVER_URL_DEFAULT: str = 'localhost:8000'
 MODEL_NAME: str = 'yolov5s_trt'
 LABEL_FILE: str = 'coco.txt'
+
+if os.name == 'nt':
+    FONT_FILE = 'arial.ttf'
+else:
+    FONT_FILE = 'FreeMono.ttf'
 
 
 def main():
@@ -71,17 +77,16 @@ def main():
     client.infer(input_batch)
 
     outputs = client.get_results()
-    # print(outputs)
 
     results:List[np.ndarray] = postprocess(
         outputs, (pil_image.height, pil_image.width))
-    # print(results[0])
 
     draw = ImageDraw.Draw(pil_image)
-    fnt = ImageFont.truetype("arial.ttf", 32)
+    fnt = ImageFont.truetype(FONT_FILE, 32)
 
-    for bb in results[0]:
-        # print(bb)
+    detected = results[0]
+    for i in range(len(detected)):
+        bb = detected[i]
         x0 = bb[0]
         y0 = bb[1]
         x1 = bb[2]

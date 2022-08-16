@@ -24,10 +24,9 @@
 
 import cv2
 import sys
-import os
+import platform
 import numpy as np
 import argparse
-import wget
 
 import triton_client
 from yolov5_utils import *
@@ -66,7 +65,9 @@ def draw_info(frame, interval):
 
 def draw_bboxes(image, results: List[np.ndarray], labels: List[str], batch_num: int = 0):
     img_height, img_width, _ = image.shape
-    for bb in results[batch_num]:
+    detected = results[batch_num]
+    for i in range(len(detected)):
+        bb = detected[i]
         x0 = bb[0]
         y0 = bb[1]
         x1 = bb[2]
@@ -132,7 +133,10 @@ def main():
     fps_counter = interval_counter.IntervalCounter(10)
 
     # Define the function to detect window close event
-    was_window_closed = lambda: cv2.getWindowProperty(WINDOW_TITLE, cv2.WND_PROP_VISIBLE) < 1
+    if platform.uname().machine == 'aarch64':
+        was_window_closed = lambda: cv2.getWindowProperty(WINDOW_TITLE, cv2.WND_PROP_AUTOSIZE) < 0
+    else:
+        was_window_closed = lambda: cv2.getWindowProperty(WINDOW_TITLE, cv2.WND_PROP_VISIBLE) < 1
 
     while True:
         # Capture frame n
@@ -147,6 +151,10 @@ def main():
         # Get interval value
         interval = fps_counter.measure()
 
+        # Submit inference request for frame n
+        client.infer(target_image)
+
+        # Postprocess frame n-1 and show bounding-box for frame n-1
         if outputs is not None:
             height, width, _ = frame.shape
 
@@ -169,8 +177,8 @@ def main():
         if was_window_closed():
             break
 
-        # Submit inference request for frame n
-        client.infer(target_image)
+        # # Submit inference request for frame n
+        # client.infer(target_image)
 
     cv2.destroyAllWindows()
     cap.release()
