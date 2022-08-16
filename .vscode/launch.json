@@ -1,64 +1,56 @@
 {
-    // IntelliSense を使用して利用可能な属性を学べます。
-    // 既存の属性の説明をホバーして表示します。
-    // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "YOLO v5 Detection from User Image",
+            "name": "YOLO v5 Detection for User Image",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/client/infer_image.py",
             "args": [
-                "--url=192.168.11.52:8000",
-                "zidane.jpg"
+                "${input:url_arg}",
+                "${input:img_arg}"
             ],
             "cwd": "${workspaceFolder}/client",
             "console": "integratedTerminal",
             "justMyCode": false
         },
         {
-            "name": "(Wired) YOLO v5 Detection from User Image",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/client/infer_image.py",
-            "args": [
-                "--url=192.168.56.1:8000",
-                "zidane.jpg"
-            ],
-            "cwd": "${workspaceFolder}/client",
-            "console": "integratedTerminal",
-            "justMyCode": false
-        },
-        {
-            "name": "YOLO v5 Detection from Camera Input",
+            "name": "YOLO v5 Detection for Camera Input",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/client/infer_camera.py",
             "args": [
-                "--camera=1",
+                "${input:cam_arg}",
                 "--width=640",
                 "--height=480",
-                "--url=192.168.11.52:8000"
+                "${input:url_arg}"
             ],
             "cwd": "${workspaceFolder}/client",
             "console": "integratedTerminal",
-            "justMyCode": false
-        },
-        {
-            "name": "(Wired) YOLO v5 Detection from Camera Input",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/client/infer_camera.py",
-            "args": [
-                "--camera=0",
-                "--width=640",
-                "--height=480",
-                "--url=192.168.56.1:8000"
-            ],
-            "cwd": "${workspaceFolder}/client",
-            "console": "integratedTerminal",
-            "justMyCode": false
+            "justMyCode": false,
+            "env": {
+                "DISPLAY": ":0"
+            }
         }
+    ],
+    "inputs": [
+        {
+            "type": "promptString",
+            "id": "url_arg",
+            "description": "Specify server URL",
+            "default": "--url=localhost:8000"
+        },
+        {
+            "type": "promptString",
+            "id": "img_arg",
+            "description": "Specify input image file",
+            "default": "zidane.jpg"
+        },
+        {
+            "type": "promptString",
+            "id": "cam_arg",
+            "description": "Specify camera ID",
+            "default": "--camera=0"
+        },
     ]
 }

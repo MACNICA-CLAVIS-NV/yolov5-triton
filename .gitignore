@@ -6,5 +6,6 @@ __pycache__
 *.plan
 *.jpg
 profile.json
+times.json
 server/model_repository/tinyyolov2_onnx
 server/model_repository/tinyyolov2_trt
