@@ -141,7 +141,7 @@ class TritonClient():
     def __init__(self, url='localhost:8000'):
         self.sent_count = 0
         self.processed_count = 0
-        self.request = None
+        self.request = False
         self.response = None
 
         try:
@@ -207,12 +207,13 @@ class TritonClient():
         self.user_data = UserData()
 
         try:
-            self.request = self.client.async_infer(
+            self.client.async_infer(
                 self.model_name, inputs,
                 partial(completion_callback, self.user_data),
                 request_id=str(self.sent_count),
                 model_version=self.model_version, outputs=outputs
             )
+            self.request = True
         except InferenceServerException as e:
             print('Inference failed: {}'.format(e))
             raise TritonClientError(str(e))
@@ -220,7 +221,7 @@ class TritonClient():
         self.sent_count += 1
 
     def get_results(self):
-        if self.request is None:
+        if self.request is False:
             return None
 
         (results, error) = self.user_data._completed_requests.get()
@@ -234,5 +235,7 @@ class TritonClient():
         output_array = self.response.as_numpy(self.output_name)
         if self.max_batch_size <= 0:
             output_array = output_array[np.newaxis, :]
+
+        self.request = False
 
         return output_array
