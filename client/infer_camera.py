@@ -28,7 +28,7 @@ import platform
 import numpy as np
 import argparse
 
-import triton_client
+import triton_http_client as triton_client
 from yolov5_utils import *
 from typing import Tuple, Optional, List, cast
 import interval_counter

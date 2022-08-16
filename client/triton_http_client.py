@@ -28,30 +28,12 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import sys
 import numpy as np
 from attrdict import AttrDict
-from functools import partial
-import queue
 
-# import tritonclient.http as httpclient
-import tritonclient.grpc as grpcclient
-import tritonclient.grpc.model_config_pb2 as mc
+import tritonclient.http as httpclient
 from tritonclient.utils import InferenceServerException
 import tritonclient.grpc.model_config_pb2 as mc
-from tritonclient.utils import triton_to_np_dtype
-
-
-class UserData:
-
-    def __init__(self):
-        self._completed_requests = queue.Queue()
-
-
-# Callback function used for async_stream_infer()
-def completion_callback(user_data, result, error):
-    # passing error raise and handling out
-    user_data._completed_requests.put((result, error))
 
 
 def parse_model(model_metadata, model_config):
@@ -139,17 +121,13 @@ class TritonClientError(Exception):
 class TritonClient():
 
     def __init__(self, url='localhost:8000'):
-        self.sent_count = 0
-        self.processed_count = 0
         self.request = None
         self.response = None
 
         try:
-            # self.client = httpclient.InferenceServerClient(
-            #     url=url, verbose=False, concurrency=1
-            # )
-            self.client = grpcclient.InferenceServerClient(
-                url=url, verbose=False)
+            self.client = httpclient.InferenceServerClient(
+                url=url, verbose=False, concurrency=1
+            )
         except Exception as e:
             print('could not create client: {}'.format(e))
             raise TritonClientError(str(e))
@@ -175,10 +153,8 @@ class TritonClient():
             print('Could not retrive config: {}'.format(e))
             raise TritonClientError(str(e))
 
-        # self.model_metadata = AttrDict(model_metadata)
-        self.model_metadata = model_metadata
-        # self.model_config = AttrDict(model_config)
-        self.model_config = model_config.config
+        self.model_metadata = AttrDict(model_metadata)
+        self.model_config = AttrDict(model_config)
         self.model_name = model_name
         self.model_version = model_version
 
@@ -199,38 +175,25 @@ class TritonClient():
         # if self.max_batch_size > 0:
         #     image = image[np.newaxis, :]
 
-        inputs = [grpcclient.InferInput(self.input_name, image.shape, self.dtype)]
+        inputs = [httpclient.InferInput(self.input_name, image.shape, self.dtype)]
         inputs[0].set_data_from_numpy(image)
 
-        outputs = [grpcclient.InferRequestedOutput(self.output_name, class_count=class_count)]
-
-        self.user_data = UserData()
+        outputs = [httpclient.InferRequestedOutput(self.output_name, class_count=class_count)]
 
         try:
             self.request = self.client.async_infer(
-                self.model_name, inputs,
-                partial(completion_callback, self.user_data),
-                request_id=str(self.sent_count),
+                self.model_name, inputs, request_id='0',
                 model_version=self.model_version, outputs=outputs
             )
         except InferenceServerException as e:
             print('Inference failed: {}'.format(e))
             raise TritonClientError(str(e))
 
-        self.sent_count += 1
-
     def get_results(self):
         if self.request is None:
             return None
 
-        (results, error) = self.user_data._completed_requests.get()
-        self.processed_count += 1
-        if error is not None:
-            print("inference failed: " + str(error))
-            sys.exit(1)
-        self.response = results
-
-        # self.response = self.request.get_result()
+        self.response = self.request.get_result()
         output_array = self.response.as_numpy(self.output_name)
         if self.max_batch_size <= 0:
             output_array = output_array[np.newaxis, :]
