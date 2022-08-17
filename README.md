@@ -23,7 +23,7 @@ YOLO v5 Object Detection on Triton Inference Server
 
 	```bash
 	pip3 install \
-        protobuf \
+        	protobuf \
 		pandas \
 		PyYAML \
 		tqdm \
