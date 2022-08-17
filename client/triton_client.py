@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Copyright (c) 2021 MACNICA-CLAVIS-NV
+# Copyright (c) 2022 MACNICA-CLAVIS-NV
 
 # Copyright (c) 2020, NVIDIA CORPORATION. All rights reserved.
 #
