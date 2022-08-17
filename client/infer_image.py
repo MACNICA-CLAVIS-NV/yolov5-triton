@@ -28,7 +28,7 @@ import os
 import argparse
 from PIL import Image, ImageDraw, ImageFont
 # import triton_http_client as triton_client
-import triton_client
+import triton_grpc_client as triton_client
 from yolov5_utils import *
 from typing import Tuple, Optional, List, cast
 
