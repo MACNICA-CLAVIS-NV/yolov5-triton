@@ -23,7 +23,7 @@ YOLO v5 Object Detection on Triton Inference Server
 
 	```bash
 	pip3 install \
-        	protobuf \
+		protobuf \
 		pandas \
 		PyYAML \
 		tqdm \
@@ -42,7 +42,8 @@ YOLO v5 Object Detection on Triton Inference Server
 		--onnx=yolov5s.onnx \
 		--saveEngine=model.plan \
 		--workspace=4096 \
-		--exportProfile=profile.json
+		--exportProfile=profile.json \
+		--exportTimes=times.json
 	```
 
 1. Copy TensorRT engine to model repository
