@@ -40,7 +40,7 @@ LABEL_FILE: str = 'coco.txt'
 if os.name == 'nt':
     FONT_FILE = 'arial.ttf'
 else:
-    FONT_FILE = 'FreeMono.ttf'
+    FONT_FILE = 'DejaVuSans.ttf'
 
 
 def main():
