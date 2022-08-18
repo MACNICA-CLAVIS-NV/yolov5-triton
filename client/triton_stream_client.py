@@ -30,7 +30,6 @@
 
 import sys
 import numpy as np
-from attrdict import AttrDict
 from functools import partial
 import queue
 
