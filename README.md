@@ -1,6 +1,16 @@
 # yolov5-triton
 YOLO v5 Object Detection on Triton Inference Server
 
+Table of Contents
+-----------------
+- [Prerequisites](#prerequisites)
+- [Server Installation (for Jetson)](#server-installation-for-jetson)
+- [Server Installation (for x86_64)](#server-installation-for-x86_64)
+- [Run Server (for Jetson)]()
+- [Run Server (for x86_64)]()
+- [Install Client]()
+- [Run Client]()
+
 ## Prerequisites
 
 ### Server
