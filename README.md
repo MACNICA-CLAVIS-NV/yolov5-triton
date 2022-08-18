@@ -65,6 +65,7 @@ YOLO v5 Object Detection on Triton Inference Server
 	```
 	
 ## Server Installation (for x86_64)
+**Need [NGC](https://catalog.ngc.nvidia.com/) account**
 
 1. Clone this repository
 
