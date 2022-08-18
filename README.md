@@ -195,5 +195,5 @@ python infer_camera.py [-h] [--camera CAMERA_ID] [--width CAPTURE_WIDTH] [--heig
 
 Example:
 ```bash
-python infer_camera.py --camera 1 --width 640 --height 480 --url 192.168.XXX.XXX
+python infer_camera.py --camera 1 --width 640 --height 480 --url 192.168.XXX.XXX:8000
 ```
