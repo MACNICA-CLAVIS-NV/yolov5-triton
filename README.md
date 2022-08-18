@@ -19,7 +19,8 @@ Table of Contents
 - For x86_64, [NGC](https://catalog.ngc.nvidia.com/) account
 
 ### Client
-- Linux(x86_64/ARM64) or Windows(x86_64)
+- Linux(x86_64/ARM64) or Windows(x86_64)  
+**No GPU resource needed for client**
 
 ## Server Installation (for Jetson)
 
