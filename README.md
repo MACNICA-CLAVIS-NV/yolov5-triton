@@ -132,3 +132,24 @@ YOLO v5 Object Detection on Triton Inference Server
 ```bash
 ./triton_start_grpc_x86.sh
 ```
+
+## Install Client
+**The client application does not need GPU resource. It can be deployed to Windows/Linux without GPU card. Virtual python environment like conda or venv is recommened. **
+
+1. Clone this repository
+
+	```bash
+	git clone https://github.com/MACNICA-CLAVIS-NV/yolov5-triton
+	```
+
+	```bash
+	cd yolov5-triton/server
+	```
+
+1. Install Python dependencies
+
+	```bash
+	pip3 install tritonclient[all] Pillow opencv-python
+	```
+
+## Run Client
