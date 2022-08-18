@@ -135,7 +135,8 @@ YOLO v5 Object Detection on Triton Inference Server
 ```
 
 ## Install Client
-**The client application does not need GPU resource. It can be deployed to Windows/Linux without GPU card. Virtual python environment like conda or venv is recommened. **
+
+**The client application does not need GPU resource. It can be deployed to Windows/Linux without GPU card. Virtual python environment like conda or venv is recommened.**
 
 1. Clone this repository
 
@@ -150,7 +151,29 @@ YOLO v5 Object Detection on Triton Inference Server
 1. Install Python dependencies
 
 	```bash
-	pip3 install tritonclient[all] Pillow opencv-python
+	pip install tritonclient[all] Pillow opencv-python
 	```
 
 ## Run Client
+
+### Image Input Inference
+
+```bash
+python infer_image.py [-h] [--url SERVER_URL] IMAGE_FILE
+```
+
+Example:
+```bash
+python infer_image.py --url localhost:8000 zidane.jpg
+```
+
+### Camera Input Inference
+
+```bash
+python infer_camera.py [-h] [--camera CAMERA_ID] [--width CAPTURE_WIDTH] [--height CAPTURE_HEIGHT] [--url SERVER_URL]
+```
+
+Example:
+```bash
+python infer_camera.py --camera 1 --width 640 --height 480 --url 192.168.XXX.XXX
+```
