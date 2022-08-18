@@ -1,6 +1,16 @@
 # yolov5-triton
 YOLO v5 Object Detection on Triton Inference Server
 
+## Prerequisites
+
+### Server
+- Jetson Xavier/Orin or x86_64 Linux with NVIDIA GPU
+- For Jetson, JetPack 5.0.2 or later
+- For x86_64, [NGC](https://catalog.ngc.nvidia.com/) account
+
+### Client
+- Linux(x86_64/ARM64) or Windows(x86_64)
+
 ## Server Installation (for Jetson)
 
 1. Clone this repository
