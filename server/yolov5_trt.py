@@ -1,10 +1,11 @@
 import os
+import sys
 import numpy as np
 import tensorrt as trt
 import pycuda.autoinit
 import urllib.request
 import argparse
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 from yolov5_utils import *
 from logging import basicConfig, getLogger, DEBUG, ERROR
 from common import *
@@ -16,6 +17,8 @@ logger = getLogger(__name__)
 DEFAULT_ENGINE_FILE = 'model.plan'
 DEFAULT_IMAGE_URL = 'https://ultralytics.com/images/zidane.jpg'
 TRT_LOGGER = trt.Logger()
+# FONT_FILE = 'DejaVuSans.ttf'
+LABEL_FILE: str = os.path.join('.', 'model_repository', 'yolov5s_trt', 'coco.txt')
 
 def main():
 
@@ -53,6 +56,30 @@ def main():
     results:List[np.ndarray] = postprocess(
         trt_outputs[0], (pil_image.height, pil_image.width))
     logger.debug(results)
+
+     # Load label categories
+    labels = [line.rstrip('\n') for line in open(LABEL_FILE)]
+
+    image_base_name: Tuple[str, str] = os.path.splitext(os.path.basename(image_file))
+
+    draw = ImageDraw.Draw(pil_image)
+    # fnt = ImageFont.truetype(FONT_FILE, 32)
+
+    detected = results[0]
+    for i in range(len(detected)):
+        bb = detected[i]
+        x0 = bb[0]
+        y0 = bb[1]
+        x1 = bb[2]
+        y1 = bb[3]
+        score = bb[4]
+        category = int(bb[5])
+        label = labels[category]
+        print('{}\t{}\t{}\t{}\t{}\t{}'.format(x0, y0, x1, y1, score, label))
+        xy = (x0, y0, x1, y1)
+        draw.rectangle(xy, outline=(0, 255, 0), width=5)
+        draw.text((x0, y0 - 32), label, fill=(0, 255, 0, 128), font=None)
+        pil_image.save('{}{}{}'.format(image_base_name[0], '_infer', image_base_name[1]))
 
     print("Done.")
 
