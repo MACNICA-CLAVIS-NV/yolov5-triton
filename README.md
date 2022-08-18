@@ -121,13 +121,13 @@ YOLO v5 Object Detection on Triton Inference Server
 	exit
 	```
 
-## Run Triton Inference Server (for Jetson)
+## Run Server (for Jetson)
 
 ```bash
 ./triton_start_grpc.sh
 ```
 
-## Run Triton Inference Server (for x86_64)
+## Run Server (for x86_64)
 
 ```bash
 ./triton_start_grpc_x86.sh
