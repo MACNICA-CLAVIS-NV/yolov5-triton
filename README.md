@@ -6,10 +6,10 @@ Table of Contents
 - [Prerequisites](#prerequisites)
 - [Server Installation (for Jetson)](#server-installation-for-jetson)
 - [Server Installation (for x86_64)](#server-installation-for-x86_64)
-- [Run Server (for Jetson)]()
-- [Run Server (for x86_64)]()
-- [Install Client]()
-- [Run Client]()
+- [Run Server (for Jetson)](#run-server-for-jetson)
+- [Run Server (for x86_64)](#run-server-for-x86_64)
+- [Install Client](#install-client)
+- [Run Client](#run-client)
 
 ## Prerequisites
 
