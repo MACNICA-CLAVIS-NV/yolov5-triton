@@ -21,8 +21,9 @@
 # SOFTWARE.
 
 import sys
-from tabnanny import verbose
 import torch
+
+BATCH_SIZE = 1
 
 def main():
     model_name = 'yolov5s'
@@ -41,7 +42,7 @@ def main():
     onnx_file = '{}.onnx'.format(model_name)
     model = model.to('cpu')
     torch.onnx.export(
-        model, torch.zeros(1, 3, 384, 640), onnx_file, 
+        model, torch.zeros(BATCH_SIZE, 3, 384, 640), onnx_file, 
         verbose=True, input_names=["input"], output_names=["output"],
         # dynamic_axes={"input": {0: "batch_size"}, "output": {0: "batch_size"}},
         export_params=True, opset_version=11)
