@@ -44,7 +44,7 @@
             "type": "promptString",
             "id": "img_arg",
             "description": "Specify input image file",
-            "default": "zidane.jpg"
+            "default": "test.jpg"
         },
         {
             "type": "promptString",
