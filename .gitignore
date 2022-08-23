@@ -4,7 +4,6 @@ __pycache__
 *.onnx
 *.trt
 *.plan
-*.jpg
 profile.json
 times.json
 server/model_repository/tinyyolov2_onnx
