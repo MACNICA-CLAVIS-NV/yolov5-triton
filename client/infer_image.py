@@ -97,8 +97,8 @@ def main():
         label = labels[category]
         print('{}\t{}\t{}\t{}\t{}\t{}'.format(x0, y0, x1, y1, score, label))
         xy = (x0, y0, x1, y1)
-        draw.rectangle(xy, outline=(0, 255, 0), width=5)
-        draw.text((x0, y0 - 32), label, font=fnt, fill=(0, 255, 0, 128))
+        draw.rectangle(xy, outline=(255, 0, 0), width=5)
+        draw.text((x0, y0 - 32), label, font=fnt, fill=(255, 0, 0, 128))
         pil_image.save('{}{}{}'.format(image_base_name[0], '_infer', image_base_name[1]))
 
 
