@@ -166,7 +166,7 @@ Table of Contents
 	```
 
 	```bash
-	cd yolov5-triton/server
+	cd yolov5-triton/client
 	```
 
 1. Install Python dependencies
@@ -185,7 +185,7 @@ python infer_image.py [-h] [--url SERVER_URL] IMAGE_FILE
 
 Example:
 ```bash
-python infer_image.py --url localhost:8000 zidane.jpg
+python infer_image.py --url localhost:8000 test.jpg
 ```
 
 ### Camera Input Inference
