@@ -63,8 +63,7 @@ Table of Contents
 		--onnx=yolov5s.onnx \
 		--saveEngine=model.plan \
 		--workspace=4096 \
-		--exportProfile=profile.json \
-		--exportTimes=times.json
+		--exportProfile=profile.json
 	```
 
 1. Copy TensorRT engine to model repository
