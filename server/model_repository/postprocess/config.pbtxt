@@ -1,0 +1,20 @@
+name: "postprocess"
+backend: "python"
+max_batch_size: 256 
+input [
+{
+    name: "INPUT_0"
+    data_type: TYPE_FP32
+    dims: [15120, 85]
+}
+]
+ 
+output [
+{
+    name: "OUTPUT_0"
+    data_type: TYPE_FP32
+    dims: [1, -1, 6]
+}
+]
+
+instance_group [{ kind: KIND_CPU }]
