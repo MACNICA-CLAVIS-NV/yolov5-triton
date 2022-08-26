@@ -32,7 +32,6 @@ logger = getLogger(__name__)
 
 INPUT_WIDTH: int = 640
 INPUT_HEIGHT: int = 384
-NUM_CLASSES: int = 80
 
 def _pil2cv(src_image: Image.Image) -> np.ndarray:
     ''' Convert image in PIL format to image in OpenCV Mat format'''

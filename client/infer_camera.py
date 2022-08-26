@@ -68,7 +68,7 @@ def draw_info(frame, interval):
         )
 
 
-def draw_bboxes(image, results: List[np.ndarray], labels: List[str], batch_num: int = 0):
+def draw_bboxes(image, results: np.ndarray, labels: List[str], batch_num: int = 0):
     img_height, img_width, _ = image.shape
     detected = results[batch_num]
     for i in range(len(detected)):
