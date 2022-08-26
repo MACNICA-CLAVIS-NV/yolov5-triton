@@ -103,6 +103,13 @@ def _preprocess_images(images: List[np.ndarray]) -> np.ndarray:
     ]
     return np.array(np_images)
 
+def _preprocess_images_uint8(images: List[np.ndarray]) -> np.ndarray:
+    cv_images: List[np.ndarray] = [_resize_input_image(img) for img in images]
+    np_images: List[np.ndarray] = [
+        np.ascontiguousarray(img.transpose(2, 0, 1), dtype='uint8') for img in cv_images
+    ]
+    return np.array(np_images)
+
 def preprocess_cv_images(images: List[np.ndarray]) -> np.ndarray:
     cv_images: List[np.ndarray] = [_reorder_cv_image(img) for img in images]
     return _preprocess_images(cv_images)
@@ -110,6 +117,15 @@ def preprocess_cv_images(images: List[np.ndarray]) -> np.ndarray:
 def preprocess_pil_images(images: List[Image.Image]) -> np.ndarray:
     cv_images: List[np.ndarray] = [_pil2cv(img) for img in images]
     return _preprocess_images(cv_images)
+
+def preprocess_cv_images2(images: List[np.ndarray]) -> np.ndarray:
+    cv_images: List[np.ndarray] = [_reorder_cv_image(img) for img in images]
+    return _preprocess_images_uint8(cv_images)
+
+def preprocess_pil_images2(images: List[Image.Image]) -> np.ndarray:
+    cv_images: List[np.ndarray] = [_pil2cv(img) for img in images]
+    return _preprocess_images_uint8(cv_images)
+
 
 def _xywh2xyxy(xywh: np.ndarray) -> np.ndarray:
     xyxy: np.ndarray = np.copy(xywh)

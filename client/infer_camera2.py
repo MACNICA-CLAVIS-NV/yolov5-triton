@@ -38,7 +38,7 @@ import interval_counter
 
 
 WINDOW_TITLE = 'YOLO v5 Demo'
-MODEL_NAME = 'yolov5s_trt'
+MODEL_NAME = 'pipeline_post'
 INFO_COLOR = (133, 15, 127)
 BBOX_COLOR = (63, 255, 255)
 CAMERA_ID_DEFAULT = 0
@@ -46,6 +46,8 @@ CAPTURE_WIDTH_DEFAULT = 640
 CAPTURE_HEIGHT_DEFAULT = 480
 SERVER_URL_DEFAULT = 'localhost:8000'
 LABEL_FILE = 'coco.txt'
+INPUT_WIDTH: int = 640
+INPUT_HEIGHT: int = 384
 
 
 def draw_info(frame, interval):
@@ -89,6 +91,21 @@ def draw_bboxes(image, results: List[np.ndarray], labels: List[str], batch_num: 
                 cv2.FONT_HERSHEY_SIMPLEX, 1, BBOX_COLOR, 1, cv2.LINE_AA)
         print(info)
 
+def _clip_coords(boxes, shape):
+    boxes[:, [0, 2]] = boxes[:, [0, 2]].clip(0, shape[1])  # x1, x2
+    boxes[:, [1, 3]] = boxes[:, [1, 3]].clip(0, shape[0])  # y1, y2
+
+def scale_coords(img0_shape, coords):
+    img1_shape = (INPUT_HEIGHT, INPUT_WIDTH)
+    # Rescale coords (xyxy) from img1_shape to img0_shape
+    gain = min(img1_shape[0] / img0_shape[0], img1_shape[1] / img0_shape[1])  # gain  = old / new
+    pad = (img1_shape[1] - img0_shape[1] * gain) / 2, (img1_shape[0] - img0_shape[0] * gain) / 2  # wh padding
+
+    coords[:, [0, 2]] -= pad[0]  # x padding
+    coords[:, [1, 3]] -= pad[1]  # y padding
+    coords[:, :4] /= gain
+    _clip_coords(coords, img0_shape)
+    return coords
 
 def main():
     # Parse the command line parameters
@@ -158,11 +175,14 @@ def main():
         client.infer(target_image)
 
         # Postprocess frame n-1 and show bounding-box for frame n-1
-        if outputs is not None:
+        if outputs is not None and len(outputs) > 0:
             height, width, _ = frame.shape
 
-            results:List[np.ndarray] = postprocess(
-                outputs, (height, width))
+            # results:List[np.ndarray] = postprocess(
+            #     outputs, (height, width))
+            
+            results = np.copy(outputs)
+            scale_coords((height, width), results[0])
 
             if len(results) > 0:
                 draw_bboxes(frame, results, labels)
