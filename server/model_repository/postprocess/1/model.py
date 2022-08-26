@@ -4,7 +4,7 @@ import json
 import io
 
 import triton_python_backend_utils as pb_utils
-import yolov5_utils
+import yolov5_postprocess
 
 # from PIL import Image
 import os
@@ -41,7 +41,7 @@ class TritonPythonModel:
 
             # print('Debug {}'.format(yolo_out.shape))
 
-            bboxes = np.array(yolov5_utils.postprocess(yolo_out))
+            bboxes = np.array(yolov5_postprocess.postprocess(yolo_out))
 
             out_tensor_0 = pb_utils.Tensor("OUTPUT_0",
                                            bboxes.astype(output0_dtype))
