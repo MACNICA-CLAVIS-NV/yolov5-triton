@@ -26,21 +26,43 @@
 import sys
 import os
 import argparse
+from tkinter import S
 from PIL import Image, ImageDraw, ImageFont
 # import triton_http_client as triton_client
-import triton_grpc_client as triton_client
-from yolov5_utils import *
+# import triton_grpc_client as triton_client
+import triton_stream_client as triton_client
+from yolov5_preprocess import *
 from typing import Tuple, Optional, List, cast
 
 
 SERVER_URL_DEFAULT: str = 'localhost:8000'
-MODEL_NAME: str = 'yolov5s_trt'
+MODEL_NAME: str = 'pipeline'
 LABEL_FILE: str = 'coco.txt'
+INPUT_WIDTH: int = 640
+INPUT_HEIGHT: int = 384
 
 if os.name == 'nt':
     FONT_FILE = 'arial.ttf'
 else:
     FONT_FILE = 'DejaVuSans.ttf'
+
+
+def _clip_coords(boxes, shape):
+    boxes[:, [0, 2]] = boxes[:, [0, 2]].clip(0, shape[1])  # x1, x2
+    boxes[:, [1, 3]] = boxes[:, [1, 3]].clip(0, shape[0])  # y1, y2
+
+
+def scale_coords(img0_shape, coords):
+    img1_shape = (INPUT_HEIGHT, INPUT_WIDTH)
+    # Rescale coords (xyxy) from img1_shape to img0_shape
+    gain = min(img1_shape[0] / img0_shape[0], img1_shape[1] / img0_shape[1])  # gain  = old / new
+    pad = (img1_shape[1] - img0_shape[1] * gain) / 2, (img1_shape[0] - img0_shape[0] * gain) / 2  # wh padding
+
+    coords[:, [0, 2]] -= pad[0]  # x padding
+    coords[:, [1, 3]] -= pad[1]  # y padding
+    coords[:, :4] /= gain
+    _clip_coords(coords, img0_shape)
+    return coords
 
 
 def main():
@@ -79,8 +101,11 @@ def main():
 
     outputs = client.get_results()
 
-    results:List[np.ndarray] = postprocess(
-        outputs, (pil_image.height, pil_image.width))
+    results = np.copy(outputs)
+
+    batch_size = len(results)
+    for b in range(batch_size):
+        scale_coords((pil_image.height, pil_image.width), results[b])
 
     draw = ImageDraw.Draw(pil_image)
     fnt = ImageFont.truetype(FONT_FILE, 32)
