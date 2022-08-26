@@ -203,9 +203,6 @@ def main():
         if was_window_closed():
             break
 
-        # # Submit inference request for frame n
-        # client.infer(target_image)
-
     cv2.destroyAllWindows()
     cap.release()
 
