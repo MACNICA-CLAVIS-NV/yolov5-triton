@@ -8,6 +8,7 @@ sudo docker run \
     --gpus=all \
     -it \
     --rm \
+    --shm-size 256mb \
     --network=host \
     -v ${MODEL_REPO_HOST_PATH}:${MODEL_REPO_CONTAINER_PATH} \
     "nvcr.io/nvidia/tritonserver:${TRITON_TAG}" \
