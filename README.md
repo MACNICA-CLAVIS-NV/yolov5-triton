@@ -144,6 +144,9 @@ Table of Contents
 ## Run Server (for Jetson)
 
 ```bash
+sudo jetson_clocks
+```
+```bash
 ./triton_start_grpc.sh
 ```
 
