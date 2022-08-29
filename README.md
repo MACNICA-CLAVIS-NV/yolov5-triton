@@ -126,8 +126,7 @@ Table of Contents
 		--onnx=yolov5s.onnx \
 		--saveEngine=model.plan \
 		--workspace=4096 \
-		--exportProfile=profile.json \
-		--exportTimes=times.json
+		--exportProfile=profile.json
 	```
 
 1. Copy TensorRT engine to model repository
@@ -144,6 +143,9 @@ Table of Contents
 
 ## Run Server (for Jetson)
 
+```bash
+sudo jetson_clocks
+```
 ```bash
 ./triton_start_grpc.sh
 ```
