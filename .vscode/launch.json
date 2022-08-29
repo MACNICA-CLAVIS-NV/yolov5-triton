@@ -15,19 +15,6 @@
             "justMyCode": false
         },
         {
-            "name": "Debug Image",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/client/infer_image.py",
-            "args": [
-                "--url=192.168.56.1:8000",
-                "${input:img_arg}"
-            ],
-            "cwd": "${workspaceFolder}/client",
-            "console": "integratedTerminal",
-            "justMyCode": false
-        },
-        {
             "name": "YOLO v5 Detection for Camera Input",
             "type": "python",
             "request": "launch",
@@ -37,24 +24,6 @@
                 "--width=640",
                 "--height=480",
                 "${input:url_arg}"
-            ],
-            "cwd": "${workspaceFolder}/client",
-            "console": "integratedTerminal",
-            "justMyCode": false,
-            "env": {
-                "DISPLAY": ":0"
-            }
-        },
-        {
-            "name": "Debug Camera",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/client/infer_camera.py",
-            "args": [
-                "${input:cam_arg}",
-                "--width=640",
-                "--height=480",
-                "--url=192.168.56.1:8000"
             ],
             "cwd": "${workspaceFolder}/client",
             "console": "integratedTerminal",
