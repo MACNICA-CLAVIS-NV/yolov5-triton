@@ -3,6 +3,7 @@ YOLO v5 Object Detection on Triton Inference Server
 
 Table of Contents
 -----------------
+- [Model Pipeline](#model-pipeline)
 - [Prerequisites](#prerequisites)
 - [Server Installation (for Jetson)](#server-installation-for-jetson)
 - [Server Installation (for x86_64)](#server-installation-for-x86_64)
@@ -11,7 +12,7 @@ Table of Contents
 - [Install Client](#install-client)
 - [Run Client](#run-client)
 
-## Model
+## Model Pipeline
 
 | Order | Model Name | Backend | Input<br>Type | Input<br>Dimension | Output<br>Type | Output<br>Dimension | Description |
 |:---|:---|:---|:---|:---|:---|:---|:---|
