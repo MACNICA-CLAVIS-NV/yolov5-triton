@@ -3,6 +3,7 @@ YOLO v5 Object Detection on Triton Inference Server
 
 Table of Contents
 -----------------
+- [What does this application do?](#what-does-this-application-do)
 - [Model Pipeline](#model-pipeline)
 - [Prerequisites](#prerequisites)
 - [Server Installation (for Jetson)](#server-installation-for-jetson)
@@ -11,6 +12,14 @@ Table of Contents
 - [Run Server (for x86_64)](#run-server-for-x86_64)
 - [Install Client](#install-client)
 - [Run Client](#run-client)
+
+## What does this application do?
+
+This application demonstrates the following things.
+- How to prepare TensorRT model for [NVIDIA Triton Inference Server](https://github.com/triton-inference-server)
+- How to launch NVIDIA Triton Inference Server
+- How to form a pipeline with the model ensemble
+- How to implement client applications for Triton Inference Server
 
 ## Model Pipeline
 
