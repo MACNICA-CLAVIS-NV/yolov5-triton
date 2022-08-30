@@ -11,6 +11,14 @@ Table of Contents
 - [Install Client](#install-client)
 - [Run Client](#run-client)
 
+## Model
+
+| Order | Model Name | Backend | Input<br>Type | Input<br>Dimension | Output<br>Type | Output<br>Dimension | Description |
+|:---|:---|:---|:---|:---|:---|:---|:---|
+| 1 | preprocess | Python | UINT8 | [3, 384, 640] | FP32 | [3, 384, 640] | Type Conversion<br>Normalization |
+| 2 | yolov5s_trt | TensorRT | FP32 | [3, 384, 640] | FP32 | [15120, 85] | Object Detection |
+| 3 | postprocess | Pythone | FP32 | [15120, 85] | FP32 | [1, -1, 6] | Bounding Box Generation<br>Non-Maximum Suppression |
+
 ## Prerequisites
 
 ### Server
