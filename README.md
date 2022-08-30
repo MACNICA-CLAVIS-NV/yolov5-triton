@@ -14,11 +14,18 @@ Table of Contents
 
 ## Model Pipeline
 
+The below pipeline is formed with [the model ensemble](https://github.com/triton-inference-server/server/blob/main/docs/architecture.md#ensemble-models). 
+
 | Order | Model Name | Backend | Input<br>Type | Input<br>Dimension | Output<br>Type | Output<br>Dimension | Description |
 |:---|:---|:---|:---|:---|:---|:---|:---|
 | 1 | preprocess | Python | UINT8 | [3, 384, 640] | FP32 | [3, 384, 640] | Type Conversion<br>Normalization |
 | 2 | yolov5s_trt | TensorRT | FP32 | [3, 384, 640] | FP32 | [15120, 85] | Object Detection |
-| 3 | postprocess | Pythone | FP32 | [15120, 85] | FP32 | [1, -1, 6] | Bounding Box Generation<br>Non-Maximum Suppression |
+| 3 | postprocess | Python | FP32 | [15120, 85] | FP32 | [1, -1, 6] | Bounding Box Generation<br>Non-Maximum Suppression |
+
+The pipeline output [1, -1, 6] consists of 1 * N * [x0, y0, x1, y1, score, class].
+N : The number of the detected bounding boxes
+(x0, y0) : The coordinate of the top-left corner of the detected bounding box
+(x1, y1) : The coordinate of the bottom-right corner of the detected bounding box
 
 ## Prerequisites
 
