@@ -23,7 +23,7 @@ This application demonstrates the following things.
 
 ## Model Pipeline
 
-The below pipeline is formed with [the model ensemble](https://github.com/triton-inference-server/server/blob/main/docs/architecture.md#ensemble-models). 
+The below pipeline is formed with [the model ensemble](https://github.com/triton-inference-server/server/blob/main/docs/user_guide/architecture.md#ensemble-models). 
 
 | Order | Model Name | Backend | Input<br>Type | Input<br>Dimension | Output<br>Type | Output<br>Dimension | Description |
 |:---|:---|:---|:---|:---|:---|:---|:---|
