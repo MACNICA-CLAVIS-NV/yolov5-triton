@@ -1,7 +1,7 @@
-ARG BASE_IMAGE=nvcr.io/nvidia/l4t-pytorch:r35.1.0-pth1.13-py3
+ARG BASE_IMAGE=nvcr.io/nvidia/l4t-pytorch:r35.2.1-pth2.0-py3
 FROM ${BASE_IMAGE}
 
-ARG RELEASE_FILE_URL="https://github.com/triton-inference-server/server/releases/download/v2.24.0/tritonserver2.24.0-jetpack5.0.2.tgz"
+ARG RELEASE_FILE_URL="https://github.com/triton-inference-server/server/releases/download/v2.32.0/tritonserver2.32.0-jetpack5.1.tgz"
 ARG TRITON_PATH=/triton
 
 ENV DEBIAN_FRONTEND=noninteractive

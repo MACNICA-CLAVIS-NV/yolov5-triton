@@ -68,13 +68,19 @@ N : The number of the detected bounding boxes<br>
 1. Obtain YOLO v5 ONNX model
 
 	```bash
-	pip3 install \
-		protobuf \
+	pip3 install -U \
+		'protobuf<4,>=3.20.2' \
+		numpy \
+		onnx \
 		pandas \
 		PyYAML \
 		tqdm \
 		matplotlib \
-		seaborn
+		seaborn \
+		psutil \
+		gitpython \
+		scipy \
+		setuptools
 	```
 
 	```bash
