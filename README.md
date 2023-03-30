@@ -143,7 +143,8 @@ N : The number of the detected bounding boxes<br>
 		PyYAML \
 		tqdm \
 		matplotlib \
-		seaborn
+		seaborn \
+		gitpython
 	```
 
 	```bash
